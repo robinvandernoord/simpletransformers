@@ -17,7 +17,7 @@ from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader, Dataset, RandomSampler, SequentialSampler
 from torch.utils.data.distributed import DistributedSampler
 from tqdm.auto import tqdm, trange
-from transformers.models.t5 import T5Config, T5ForConditionalGeneration, T5Tokenizer
+from transformers.models.t5 import T5Config, T5ForConditionalGeneration, T5Tokenizer, T5TokenizerFast
 from transformers.optimization import (
     get_constant_schedule,
     get_constant_schedule_with_warmup,
@@ -130,7 +130,7 @@ class T5Model:
             self.config = config_class.from_pretrained(model_name, **self.args.config)
             self.model = model_class.from_pretrained(model_name, config=self.config)
 
-        if isinstance(tokenizer, T5Tokenizer):
+        if isinstance(tokenizer, (T5Tokenizer, T5TokenizerFast)):
             self.tokenizer = tokenizer
             self.model.resize_token_embeddings(len(self.tokenizer))
         elif model_type == "byt5":
